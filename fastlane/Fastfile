@@ -1,0 +1,38 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:ios)
+
+platform :ios do
+  desc "Description of what the lane does"
+  lane :test do
+  scheme_name = "Test"
+  output_directory = "./output/debug/"
+  version = get_info_plist_value(path: "./#{scheme_name}/Info.plist", key: "CFBundleShortVersionString")
+  build = get_info_plist_value(path: "./#{scheme_name}/Info.plist", key: "CFBundleVersion")
+  output_name = "#{scheme_name}_debug_#{version}_#{build}_#{Time.now.strftime('%Y%m%d%H%M%S')}.ipa"
+    gym(
+    scheme: scheme_name,
+    configuration: "Debug",
+    export_method:"development",
+    derived_data_path:"./derived_data_path",
+    clean: true, # 在构建前先clean
+    output_directory:output_directory,
+    output_name:output_name,
+    export_xcargs: "-allowProvisioningUpdates",
+    )
+    
+  end
+end
